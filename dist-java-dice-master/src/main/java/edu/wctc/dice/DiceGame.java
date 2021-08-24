@@ -1,29 +1,32 @@
 package edu.wctc.dice;
 
+import edu.wctc.dice.iface.Dice;
 import edu.wctc.dice.iface.GameInput;
 import edu.wctc.dice.iface.GameOutput;
+import edu.wctc.dice.impl.Roll6SidedDice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 @Component
 public class DiceGame {
     private GameInput in;
     private GameOutput out;
-    //private Dice theDice = new Dice();
+    private Dice theDice;
+
 
     private List<Player> players = new ArrayList<>();
     private int currentRound = 1;
 
 
     @Autowired
-    public DiceGame(GameInput in, GameOutput out) {
+    public DiceGame(GameInput in, GameOutput out, Dice theDice) {
         this.in = in;
         this.out = out;
+        this.theDice = theDice;
         System.out.println("DiceGame created");
     }
 
@@ -113,10 +116,9 @@ public class DiceGame {
         }
         out.output(report);
     }
-
-    private boolean rollDice() {
-        int die1 = rollDie();
-        int die2 = rollDie();
+    public boolean rollDice() {
+        int die1 = theDice.rollDie();
+        int die2 = theDice.rollDie();
 
         // Players win on even totals
         boolean even = (die1 + die2) % 2 == 0;
@@ -130,9 +132,5 @@ public class DiceGame {
         return even;
     }
 
-    private int rollDie() {
-        Random random = new Random();
-        return random.nextInt(6) + 1;
-//        return dieRoller.rollDie();
-    }
+
 }
